@@ -250,8 +250,9 @@ class trdb{
 		$i   = 0;
 		$exe = array();
 		$sql = "";
-		foreach( $ks as $item ){
-			$sql .= " and ";
+		foreach( $ks as $key => $item ){
+			if($item == "") continue;
+			$sql .= $key == 0 ? "" : " and ";
 			$sql .= " {$concat} like :keyword{$i} ";
 			$exe  = array_merge($exe,array(":keyword{$i}"=>"%{$item}%"));
 			$i++;
@@ -334,6 +335,7 @@ class trdb{
 					$temp["to"]		= $item["to"];
 				}
 				else if( $item["type"] == "search_concat" ){
+					if(trim($item["keyword"]) == "") continue;
 					$temp["type"]	= "search_concat";
 					$re				= $this->search_concat($item["column"],$item["keyword"]);
 					$temp["sql"]	= $re["text"];
@@ -382,17 +384,19 @@ class trdb{
 		
 		
 		if( strtolower(substr(trim($table),0,6)) == "select" ){
-			$sql 	= "{$table} where 1=1 ";
+			$sql 	= "{$table} ";
 		}
 		else if( strtolower(substr(trim($table),0,6)) == "update" ){
-			$sql 	= "{$table} where 1=1 ";
+			$sql 	= "{$table} ";
 		}
 		else if( strtolower(substr(trim($table),0,6)) == "insert" ){
-			$sql 	= "{$table} where 1=1 ";
+			$sql 	= "{$table} ";
 		}
 		else{
-			$sql 	= "select * from {$table} where 1=1 ";
+			$sql 	= "select * from {$table} ";
 		}
+
+		if(count($revise) > 0) $sql .= " where ";
 		
 		$exe	= [];
 		$i		= 0;
@@ -406,7 +410,7 @@ class trdb{
 			
 			if( $item["type"] == "default" ){
 				
-				$sql.= " and `{$col}` {$item["condition"]} :{$_col} ";
+				$sql.= " `{$col}` {$item["condition"]} :{$_col} ";
 				$exe = array_merge($exe,array(
 							":{$_col}" => $item["value"]
 						));
@@ -414,12 +418,12 @@ class trdb{
 			}
 			else if( $item["type"] == "custom" ){
 				
-				$sql.= " and {$item["value"]} ";
+				$sql.= " {$item["value"]} ";
 			
 			}
 			else if( $item["type"] == "between" ){
 				
-				$sql.= " and (`{$col}` between :{$_col}_from and :{$_col}_to) ";
+				$sql.= " (`{$col}` between :{$_col}_from and :{$_col}_to) ";
 				$exe = array_merge($exe,array(
 							":{$_col}_from" => $item["from"],
 							":{$_col}_to"   => $item["to"]
@@ -429,7 +433,7 @@ class trdb{
 			else if( $item["type"] == "in" ){
 				
 				if( !empty($item["sql"]) ){
-					$sql.= " and `{$col}` in ".$item["sql"];
+					$sql.= " `{$col}` in ".$item["sql"];
 					$exe = array_merge($exe,$item["exe"]);
 				}
 			
