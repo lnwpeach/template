@@ -26,20 +26,24 @@
 			<button class='btn btn-sm btn-light' onclick='setting_box()' style='float:right;margin-top:-25px;margin-right:15px;'>Setting</button>
 
 			<hr style="border:1px solid #ddd;">
-			
 			<textarea name="input" style="width:100%;height:500px;"></textarea>
 
-			<h3 class="mt-3">Javascript</h3>
+
+			<h3 class="mt-3">JS Save</h3>
+			<button class='btn btn-sm btn-light' onclick="copy_text($('[name=js_save]'))" style='float:right;margin-top:-25px;'>Copy</button>
 			<hr style="border:1px solid #ddd;">
-			<textarea name="js" style="width:100%;height:500px;"></textarea>
+			<textarea name="js_save" style="width:100%;height:500px;"></textarea>
+
+			<h3 class="mt-3">JS Retrieve</h3>
+			<button class='btn btn-sm btn-light' onclick="copy_text($('[name=js_retrieve]'))" style='float:right;margin-top:-25px;'>Copy</button>
+			<hr style="border:1px solid #ddd;">
+			<textarea name="js_retrieve" style="width:100%;height:500px;"></textarea>
 		</div>
 
 		<div class="col-md-6">
-			
-		
 			<h3>HTML</h3>
+			<button class='btn btn-sm btn-light' onclick="copy_text($('[name=html]'))" style='float:right;margin-top:-25px;'>Copy</button>
 			<hr style="border:1px solid #ddd;">
-
 			<textarea name="html" style="width:100%;height:1000px;"></textarea>
 		</div>
 	</div>
@@ -79,8 +83,8 @@ function generate() {
 	var js_retrieve_variable = window.setting.js_retrieve_variable;
 	var input = $('[name=input]').val();
 	var html = "";
-	var js_save = `// save_function\nvar ${js_save_variable} = {};\n`;
-	var js_retrieve = `// retrieve\nvar ${js_retrieve_variable} = res.${js_retrieve_variable};\n`;
+	var js_save = `var ${js_save_variable} = {};\n`;
+	var js_retrieve = `var ${js_retrieve_variable} = res.${js_retrieve_variable};\n`;
 	var js_save_space_arr = [];
 
 	var input_arr = input.split('\n');
@@ -112,7 +116,8 @@ function generate() {
 	});
 
 	$('[name=html]').val(html);
-	$('[name=js]').val(js_save+'\n'+js_retrieve);
+	$('[name=js_save]').val(js_save);
+	$('[name=js_retrieve]').val(js_retrieve);
 }
 
 function letter(str) {
@@ -159,6 +164,11 @@ function save_setting() {
 	window.setting['html_template'] 		= $('[name=html_template]', content).val();
 	window.setting['js_save_variable'] 		= $('[name=js_save_variable]', content).val();
 	window.setting['js_retrieve_variable'] 	= $('[name=js_retrieve_variable]', content).val();
+}
+
+function copy_text(target) {
+	$(target).select();
+	document.execCommand("copy");
 }
 
 $(document).ready(function() {
