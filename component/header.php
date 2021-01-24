@@ -31,7 +31,7 @@
 <div class="container-fluid">
 
 <div class="row mt-5">
-<div class="col-12 col-lg-10 col-xl-9 content">
+<div class="col-12 col-lg-10 col-xl-9 mb-3 content">
 
 <nav class="navbar navbar-expand-sm navbar-dark navbar-menu">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">

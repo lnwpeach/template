@@ -1,8 +1,4 @@
 <?php
-
-require_once dirname(__FILE__)."/../../../config.php";
-
-
 class trdb{
 	
 	
@@ -38,7 +34,7 @@ class trdb{
 					"username"		=>$info["username"],
 					"password"		=>$info["password"],
 				 ];
-		$this->pdo  = new PDO($input["database_type"].':host='.$input["server"].';dbname='.$input["database_name"].';charset=utf8', $input["username"], $input["password"]);	
+        $this->pdo  = new PDO($input["database_type"].':host='.$input["server"].';dbname='.$input["database_name"].';charset=utf8', $input["username"], $input["password"]);	
 	}
 	
 	
@@ -125,8 +121,8 @@ class trdb{
 			$this->debug_mode = false;
 			return $sth->errorInfo();
 		}
-
-		return $this->pdo->query("select * from {$table} where {$where} ")->fetch(PDO::FETCH_ASSOC);
+		
+		return ['success' => 1, 'errorInfo' => $sth->errorInfo()];
 	}
 
 	
@@ -229,7 +225,8 @@ class trdb{
 			$sth 	= $this->pdo->prepare($sql);
 			$check 	= $sth->execute($exe);
 			$last_id= $this->pdo->query("select last_insert_id();")->fetchColumn();
-			$return = empty($last_id)?0:$last_id;
+			$last_id = empty($last_id)?0:$last_id;
+			$return = ['last_id' => $last_id, 'errorInfo' => $sth->errorInfo()];
 			
 		
 			if( $this->debug_mode ){
@@ -409,7 +406,7 @@ class trdb{
 			
 			if( $item["type"] == "default" ){
 				
-				$sql.= " `{$col}` {$item["condition"]} :{$_col} ";
+				$sql.= " and `{$col}` {$item["condition"]} :{$_col} ";
 				$exe = array_merge($exe,array(
 							":{$_col}" => $item["value"]
 						));
@@ -417,12 +414,12 @@ class trdb{
 			}
 			else if( $item["type"] == "custom" ){
 				
-				$sql.= " {$item["value"]} ";
+				$sql.= " and {$item["value"]} ";
 			
 			}
 			else if( $item["type"] == "between" ){
 				
-				$sql.= " (`{$col}` between :{$_col}_from and :{$_col}_to) ";
+				$sql.= " and (`{$col}` between :{$_col}_from and :{$_col}_to) ";
 				$exe = array_merge($exe,array(
 							":{$_col}_from" => $item["from"],
 							":{$_col}_to"   => $item["to"]
@@ -432,7 +429,7 @@ class trdb{
 			else if( $item["type"] == "in" ){
 				
 				if( !empty($item["sql"]) ){
-					$sql.= " `{$col}` in ".$item["sql"];
+					$sql.= " and `{$col}` in ".$item["sql"];
 					$exe = array_merge($exe,$item["exe"]);
 				}
 			
@@ -847,93 +844,6 @@ class trdb{
 
 	}
 }
-
-
-
-
-
-$pdo1 =  new trdb([
-			'database_type' => 'mysql',
-			'database_name' => $db_database,
-			'server' 		=> $db_server,
-			'username' 		=> $db_user,
-			'password' 		=> $db_pass,
-		 ]);
-
-
-if( !empty($_SESSION["company_id"]) ){
-	$db_specify = $pdo1->query("select db from company_list where company_id = '{$_SESSION["company_id"]}' limit 1;")->fetchColumn();
-	$db_client 	= !empty($db_specify)?$db_specify:$db_client;
-}
-
-$pdo2 =  new trdb([
-			'database_type' => 'mysql',
-			'database_name' => $db_client,
-			'server' 		=> $db_server,
-			'username' 		=> $db_user,
-			'password' 		=> $db_pass,
-		 ]);
-
-
-
-
-// check if exist -> convert json to object -> insert into database	
-
-if (!(isset($_POST['json']))){
-	
-	$answer["message"] = "No data is received!";
-	exit(json_encode($answer));
-}
-
-
-if (get_magic_quotes_gpc()){
-
-	$_POST['json'] = stripslashes($_POST['json']);
-}
-
-
-$data = json_decode($_POST['json'],true);
-
-
-if( empty($_SESSION["company_id"]) ){
-	$trdb_param = [];
-	$trdb_param["user_id"] 		= $data["user_id"];
-	$trdb_param["company_id"] 	= $data["company_id"];
-}
-else{
-	$trdb_param = $_SESSION;
-}
-
-
-
-
-$pdo1 =  new trdb([
-			'database_type' => 'mysql',
-			'database_name' => $db_database,
-			'server' 		=> $db_server,
-			'username' 		=> $db_user,
-			'password' 		=> $db_pass,
-		 ]);
-
-
-if( !empty($trdb_param["company_id"]) ){
-	$db_specify = $pdo1->query("select db from company_list where company_id = '{$trdb_param["company_id"]}' limit 1;")->fetchColumn();
-	$db_client 	= !empty($db_specify)?$db_specify:$db_client;
-}
-
-$pdo2 =  new trdb([
-			'database_type' => 'mysql',
-			'database_name' => $db_client,
-			'server' 		=> $db_server,
-			'username' 		=> $db_user,
-			'password' 		=> $db_pass,
-		 ]);
-
-if( !isset($trdb_param["user_id"]) ){
-	$answer["message"] = "User Id is not correctly configured!";
-	exit(json_encode($answer));
-}
-
 
 
 ?>
