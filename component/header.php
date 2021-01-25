@@ -22,8 +22,9 @@
 <div class="connect">
     <div class="info-mem">
         <ul>
+            <li><a style="color:white;" href="documentation/">Documentation</a></li>
             <li class="info-name">สวัสดีคุณ Admin</li>
-            <li><a href="#">Logout</a></li>
+            <li class="logout"><a href="#">Logout</a></li>
         </ul>
     </div>
 </div>
