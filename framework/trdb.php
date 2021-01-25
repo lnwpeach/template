@@ -222,11 +222,11 @@ class trdb{
 			}
 
 			
-			$sth 	= $this->pdo->prepare($sql);
-			$check 	= $sth->execute($exe);
-			$last_id= $this->pdo->query("select last_insert_id();")->fetchColumn();
-			$last_id = empty($last_id)?0:$last_id;
-			$return = ['last_id' => $last_id, 'errorInfo' => $sth->errorInfo()];
+			$sth 		= $this->pdo->prepare($sql);
+			$check 		= $sth->execute($exe);
+			$last_id	= $this->pdo->query("select last_insert_id();")->fetchColumn();
+			$last_id 	= empty($last_id) ? 0 : $last_id;
+			$return 	= ['last_id' => $last_id, 'error_info' => $sth->errorInfo()];
 			
 		
 			if( $this->debug_mode ){
