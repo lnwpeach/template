@@ -81,16 +81,16 @@
 function generate() {
 	var js_save_variable = window.setting.js_save_variable;
 	var js_retrieve_variable = window.setting.js_retrieve_variable;
-	var input = $('[name=input]').val();
+	var input = $("[name=input]").val();
 	var html = "";
 	var js_save = `var ${js_save_variable} = {};\n`;
 	var js_retrieve = `var ${js_retrieve_variable} = res.${js_retrieve_variable};\n`;
 	var js_save_space_arr = [];
 
-	var input_arr = input.split('\n');
+	var input_arr = input.split("\n");
 	$.each(input_arr, function(k, row) {
 		var temp = window.setting.html_template;
-		var col = row.split(';');
+		var col = row.split(";");
 
 		temp = temp.replace(/\*\*0/g, letter(col[0]));
 		temp = temp.replace(/\*0/g, col[0]);
@@ -99,11 +99,11 @@ function generate() {
 		html += temp;
 
 		// JS Save
-		js_save_index = `${js_save_variable}['${col[0]}']`;
+		js_save_index = `${js_save_variable}["${col[0]}"]`;
 		js_save_space_arr.push(js_save_index.length);
-		js_save 	+= `${js_save_index}--space${k}--= $('[name=${col[0]}]').val();\n`;
+		js_save 	+= `${js_save_index}--space${k}--= $("[name=${col[0]}]").val();\n`;
 
-		js_retrieve += `$('[name=${col[0]}]').val(${js_retrieve_variable}.${col[0]});\n`;
+		js_retrieve += `$("[name=${col[0]}]").val(${js_retrieve_variable}.${col[0]});\n`;
 	});
 
 	var tab = 4;
@@ -112,29 +112,29 @@ function generate() {
 	else space = max_space + (tab - (max_space % tab));
 	
 	$.each(js_save_space_arr, function(k, v) {
-		js_save = js_save.replace(`--space${k}--`, new Array((space - v) + 1).join(' '));
+		js_save = js_save.replace(`--space${k}--`, new Array((space - v) + 1).join(" "));
 	});
 
-	$('[name=html]').val(html);
-	$('[name=js_save]').val(js_save);
-	$('[name=js_retrieve]').val(js_retrieve);
+	$("[name=html]").val(html);
+	$("[name=js_save]").val(js_save);
+	$("[name=js_retrieve]").val(js_retrieve);
 }
 
 function letter(str) {
-	str = str.split('_');
+	str = str.split("_");
 	$.each(str, function(k, v) {
 		str[k] = v.charAt(0).toUpperCase() + v.slice(1);
 	});
-	return str.join(' ');
+	return str.join(" ");
 }
 
 function setting_box() {
-	var content = $('#setting_html').html();
+	var content = $("#setting_html").html();
 	content = $(content);
 
-	$('[name=html_template]', content).val(window.setting['html_template']);
-	$('[name=js_save_variable]', content).val(window.setting['js_save_variable']);
-	$('[name=js_retrieve_variable]', content).val(window.setting['js_retrieve_variable']);
+	$("[name=html_template]", content).val(window.setting["html_template"]);
+	$("[name=js_save_variable]", content).val(window.setting["js_save_variable"]);
+	$("[name=js_retrieve_variable]", content).val(window.setting["js_retrieve_variable"]);
 
 	bootbox.dialog({
         message: content,
@@ -142,12 +142,12 @@ function setting_box() {
 		size: "large",
         buttons: {
             danger: {
-                label: "<i class='fa fa-close'></i> Close [ESC]",
-                className: "btn-light"
+                label: `<i class='fa fa-close'></i> Close [ESC]`,
+                className: `btn-light`
             },
             success: {
-                label: "<i class='fa fa-save'></i> Save",
-                className: "btn-success",
+                label: `<i class='fa fa-save'></i> Save`,
+                className: `btn-success`,
                 callback: function(){
                     save_setting();
                 }
@@ -161,9 +161,9 @@ function save_setting() {
 	var content = $(".bootbox [name=setting_content]");
 	var setting_html = $("#setting_html [name=setting_content]");
 
-	window.setting['html_template'] 		= $('[name=html_template]', content).val();
-	window.setting['js_save_variable'] 		= $('[name=js_save_variable]', content).val();
-	window.setting['js_retrieve_variable'] 	= $('[name=js_retrieve_variable]', content).val();
+	window.setting["html_template"] 		= $("[name=html_template]", content).val();
+	window.setting["js_save_variable"] 		= $("[name=js_save_variable]", content).val();
+	window.setting["js_retrieve_variable"] 	= $("[name=js_retrieve_variable]", content).val();
 }
 
 function copy_text(target) {
@@ -174,12 +174,12 @@ function copy_text(target) {
 $(document).ready(function() {
 	var html = `<tr>\n`+
 				`	<td><b>**0</b></td>\n`+
-				`	<td><input type='text' name='*0' style='width:100%;'></td>\n`+
+				`	<td><input type="text" name="*0" style="width:100%;"></td>\n`+
 				`</tr>\n`;
 	window.setting = {
-		'html_template' : html,
-		'js_save_variable' : 'head',
-		'js_retrieve_variable' : 'head',
+		"html_template" : html,
+		"js_save_variable" : "head",
+		"js_retrieve_variable" : "head",
 	};
 
 	var input = `product_id\n`+
@@ -187,6 +187,6 @@ $(document).ready(function() {
 				`sale_name\n`+
 				`address\n`+
 				`remark`;
-	$('[name=input]').val(input);
+	$("[name=input]").val(input);
 });
 </script>
