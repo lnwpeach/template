@@ -47,7 +47,7 @@ body {
 	padding: 0px 5px 0 5px;
 	line-height: 26px;
 }
-.info-mem a {
+.info-mem .logout a {
 	display: block;
 	line-height: 27px;
 	margin: 0;
@@ -56,7 +56,7 @@ body {
 	color: #fff;
 	border-left: 1px solid #fff;
 }
-.info-mem a:hover {
+.info-mem .logout a:hover {
 	background-color: rgb(255, 70, 70);
 }
 
